@@ -29,10 +29,6 @@ for (var k in interfaces) {
     }
 }
 
-var x_pos=new Array(50);
-var y_pos=new Array(50);
-
-
 count=0; // the number of input temperature data after start server.
 
 //Work with http call command
@@ -47,31 +43,8 @@ app.get('/', function(req,res){
 		res.send(formatted+' Trash:'+req.query.temp);
 		console.log(formatted+' Trash:'+req.query.temp);
 	
-	
-		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
-				if(err) throw err;
-				});
-		
-		count=count+1;
-	
-		if(count&1){// 50 = trash bin total number
-			var n=0;
-					connection.query('select * from tbl order by time desc limit 50',function(err,rows,fields){
-							if(err) throw err;
-							
-							for (var k in rows) {
-							if (rows[k].amount_trash > 50.0)
-							console.log('floor: ', rows[k].floor, 'bin number: ', rows[k].amount_trash);
-							y_pos[n]=rows[k].floor;
-							x_pos[n]=rows[k].bin_no;
-							n++;
-							}
-							});
-		}
-	
-
 		//Write to local TXT file.
-		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
+		fs.appendFile('log_trash2.txt',req.query.temp+' '+formatted+'\n', function(err){
 			if(err) throw err;
 		});
 			
@@ -84,12 +57,13 @@ app.get('/', function(req,res){
 		data.value=req.query.temp;
 		*/
 		data.time = formatted;
-		data.amount_trash = req.query.temp;
+		//data.amount_trash = req.query.temp;
 		data.bin_no = Math.floor(Math.random() * 10 + 1);
 		data.floor = Math.floor(Math.random() * 5 + 1);
+		console.log('[send_data2] fine '); 
 
 		//Insert data to DB by query 
-		connection.query('INSERT INTO tbl SET ?',data,function(err,rows,cols){
+		connection.query('INSERT INTO tbl2 SET ?',data,function(err,rows,cols){
 			if(err) throw err;
 		
 			console.log('Done Insert Query');	
@@ -105,7 +79,7 @@ app.get('/', function(req,res){
 
 app.get('/dump',function(req,res){
 	//Get Recent data from DB by query
-	connection.query('SELECT * from tbl',function(err,rows,cols){
+	connection.query('SELECT * from tbl2',function(err,rows,cols){
 		if(err)	throw err;
 		res.write('<html><head><title>The Amount of Trash in Trash Bin</title></head><body>');	
 		res.write('<p><h1>Measured Amount of Trash @ AS 714, Sogang Univ.</h1></p>');
@@ -173,7 +147,7 @@ app.get('/dump',function(req,res){
 	});
 })*/
 
-app.listen(5000, function(){
+app.listen(8000, function(){
 	//console.log('Temperature Measuring Program listening on port 5000')
-	console.log('Program that Measures The Amount of Trash listening on port 5000')
+	console.log('Program that Measures The Amount of Trash listening on port 8000')
 })
