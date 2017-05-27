@@ -1,0 +1,35 @@
+<html>
+<head>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+		google.charts.load('current',{'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawChart);
+		function drawChart(){
+			var data = new google.visualization.DataTable();
+			console.log(data);
+			<%COLUMN%>
+			data.addRows([
+				<%DATA%>
+			]);
+	
+			var options = {
+				chart: {
+					title: 'Temperature',
+					//subtitle: '<SUBTITLE>',
+					curveType: 'function',
+					vAxis: {title: 'time'},
+					hAxis: {title: 'amount'}
+				},
+				width: '100%',
+				height: '100%',
+				interpolateNulls: true
+			};
+			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+			chart.draw(data,options);
+		}
+	</script>
+</head>
+<body>
+	<div id="curve_chart" style="width: 900px; height: 500px"></div>
+</body>
+</html>
