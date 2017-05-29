@@ -1,3 +1,4 @@
+
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
@@ -9,11 +10,13 @@ int interval = 15000;   // One Minute
 //int sensorValue;
 const int trigPin = D1;
 const int echoPin = D2;
-const int trigPin2 = D3;
-const int echoPin2 = D4;
+
 // defines variables
 long duration;
 int distance;
+int first_mea;
+int temp_mea;
+int height_bin = -1;
 
 // Information needed to connect to Wifi
 const char* ssid     = "AS712a";
@@ -27,6 +30,7 @@ const int httpPort   = 80;
 // Information needed to connect to the server(Ubuntu VM @ Sogang Univ)
 const char* private_server = "163.239.78.89";
 const int serverPort       = 5000;
+const int serverPort2     = 8000;
 
 // Get distance data from sensor
 String working(int trigger, int echo) {
@@ -49,7 +53,23 @@ String working(int trigger, int echo) {
   // Prints the distance on the Serial Monitor
   Serial.print("Distance: ");
   Serial.println(distance);
-  return String(distance);
+  Serial.print("check height_bin :");
+  Serial.println(height_bin);
+  if(height_bin == -1 && distance <= 100) { // 쓰레기통 높이 결정
+    
+    height_bin = distance;
+    Serial.println("height_bin : ");
+    Serial.print(height_bin);
+    return String(0.0);
+  }
+  if(distance <= height_bin) {
+    Serial.println("Distance : ");
+    Serial.print(distance);
+    return String(((float)height_bin-(float)distance) / (float)height_bin * 100.0);
+    
+  }
+  distance = -1;
+  return String(-1);
 }
 
 // Send the sensor data to 
@@ -62,33 +82,17 @@ void delivering(String payload, int bin_num) {
   //Connect to ThingSpeak Server
   if (client.connect(host, httpPort)) {
     //http call to server by using GET Method.
-    if(bin_num == 1) {
-      getheader = "GET "+ String(url) +"&field1="+ String(payload) +" HTTP/1.1";
-      client.println(getheader);
-      client.println("User-Agent: ESP8266");  
-      client.println("Host: " + String(host));  
-      client.println("Connection: close");  
-      client.println();
+    getheader = "GET "+ String(url) +"&field1="+ String(payload) +" HTTP/1.1";
+    client.println(getheader);
+    client.println("User-Agent: ESP8266");  
+    client.println("Host: " + String(host));  
+    client.println("Connection: close");  
+    client.println();
 
-      Serial.println(getheader);//To Check
-      while (client.connected()) {
-        String line = client.readStringUntil('\n');
-        Serial.println(line);
-      }
-    }
-    if(bin_num == 2) {
-      getheader = "GET "+ String(url) +"&field2="+ String(payload) +" HTTP/1.1";
-      client.println(getheader);
-      client.println("User-Agent: ESP8266");  
-      client.println("Host: " + String(host));  
-      client.println("Connection: close");  
-      client.println();
-
-      Serial.println(getheader);//To Check
-      while (client.connected()) {
-        String line = client.readStringUntil('\n');
-        Serial.println(line);
-      }
+    Serial.println(getheader);//To Check
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      Serial.println(line);
     }
   }
   else{
@@ -143,15 +147,13 @@ void setup() {
   //Serial.begin(115200);
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-  pinMode(trigPin2, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin2, INPUT); // Sets the echoPin as an Input
+ 
   Serial.begin(9600); // Starts the serial communication
   
   connect_ap(); // connect to WiFi
   Serial.println();
   Serial.println("Arduino: Measure The Amount of Trash"); 
   //sensors.begin();
-  
 }
 
 unsigned long mark = 0;
@@ -159,8 +161,9 @@ void loop() {
   if (millis() > mark ) {
      mark = millis() + interval;
      String payload = working(trigPin, echoPin);  // get sensor data
-     delivering(payload, 1);   // deliver it to Thingspeak and Linux server via WiFi
-     String payload2 = working(trigPin2, echoPin2);  // get sensor data
-     delivering(payload2, 2);   // deliver it to Thingspeak and Linux server via WiFi
+     if(distance != -1) 
+        delivering(payload, 1);   // deliver it to Thingspeak and Linux server via WiFi
+   
   }
 }
+

@@ -30,7 +30,6 @@ for (var k in interfaces) {
 }
 
 
-
 var initial_amount = new Array(5);
 for(var i=0; i<5; i++){
 	initial_amount[i] = new Array(10);
@@ -53,6 +52,8 @@ connection.query('select * from tbl order by pid desc limit 50',function(err,row
 
 var increase_amount = [4.8,5.3,15.6,1.1,2.3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
+var x_pos=new Array(50);
+var y_pos=new Array(50);
 
 count=0; // the number of input temperature data after start server.
 
@@ -65,8 +66,7 @@ app.get('/', function(req,res){
 
 		var dt = dateTime.create();
 		var formatted = dt.format('Y-m-d H:M:S');
-		res.send(formatted+' Trash:'+req.query.temp);
-	
+		res.send(formatted+' Trash:'+req.query.temp);	
 	
 
 		data={};
@@ -76,6 +76,49 @@ app.get('/', function(req,res){
 		data.amount_trash = req.query.temp;
 		data.bin_no = 1;
 		data.floor = 1;
+
+		console.log(formatted+' Trash:'+req.query.temp);
+	
+	
+		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
+				if(err) throw err;
+				});
+		
+		count=count+1;
+	
+		if(count&1){// 50 = trash bin total number
+			var n=0;
+					connection.query('select * from tbl order by time desc limit 50',function(err,rows,fields){
+							if(err) throw err;
+							
+							for (var k in rows) {
+							if (rows[k].amount_trash > 50.0)
+							console.log('floor: ', rows[k].floor, 'bin number: ', rows[k].amount_trash);
+							y_pos[n]=rows[k].floor;
+							x_pos[n]=rows[k].bin_no;
+							n++;
+							}
+							});
+		}
+	
+
+		//Write to local TXT file.
+		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
+			if(err) throw err;
+		});
+			
+		data={};
+	/*data.seq=count++;
+		data.type='T';		//Means 'Temperature'
+		data.device='102';	
+		data.unit='0';
+		data.ip=addresses;
+		data.value=req.query.temp;
+		*/
+		data.time = formatted;
+		data.amount_trash = req.query.temp;
+		data.bin_no = Math.floor(Math.random() * 10 + 1);
+		data.floor = Math.floor(Math.random() * 5 + 1);
 
 		//Insert data to DB by query 
 		connection.query('INSERT INTO tbl SET ?',data,function(err,rows,cols){
@@ -110,6 +153,10 @@ app.get('/', function(req,res){
 					initial_amount[floor-1][bin_no-1]=0.0;
 			}
 		}
+
+			console.log('Done Insert Query');	
+		});
+
 	}
 	else{
 		res.send('Unauthorized Access');
@@ -157,7 +204,7 @@ app.get('/dump',function(req,res){
 })
 
 app.get('/graph',function(req,res){
-	
+
 	console.log('Got app.get(graph)');
 	var html = fs.readFile('./graph1.html',function(err,html) {
 		html=" "+html;
@@ -175,7 +222,7 @@ app.get('/graph',function(req,res){
 				console.log(date);
 				var ymd=date[0].split('-');
 				var hms=date[1].split(':');
-				
+
 				console.log("[new Date("+ymd[0]+","+ymd[1]+","+ymd[2]+","+hms[0]+","+hms[1]+","+hms[2]+"),"+r.amount_trash + "]");
 				data+=comma+"[new Date("+ymd[0]+","+ymd[1]+","+ymd[2]+","+hms[0]+","+hms[1]+","+hms[2]+"),"+r.amount_trash + "]";
 				comma=",";
@@ -189,6 +236,16 @@ app.get('/graph',function(req,res){
 			html=html.replace("<%COLUMN%>",header);
 			html=html.replace("<%DATA%>",data);
 
+			var header = "data.addColumn('date','Date/Time');";
+			console.log(header);
+			header+="data.addColumn('number','bin_amount');";
+			console.log(header);
+			console.log(data);
+			html=html.replace("<%COLUMN%>",header);
+			console.log(header);
+			//data?? test
+			html=html.replace("<%DATA%>",data);
+
 			res.writeHeader(200,{"Content-Type": "text/html"});
 			res.write(html);
 			res.end();			
@@ -197,5 +254,6 @@ app.get('/graph',function(req,res){
 })
 
 app.listen(5000, function(){
+	//console.log('Temperature Measuring Program listening on port 5000')
 	console.log('Program that Measures The Amount of Trash listening on port 5000')
 })

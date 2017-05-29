@@ -29,6 +29,10 @@ for (var k in interfaces) {
     }
 }
 
+var x_pos=new Array(50);
+var y_pos=new Array(50);
+
+
 count=0; // the number of input temperature data after start server.
 
 //Work with http call command
@@ -43,6 +47,29 @@ app.get('/', function(req,res){
 		res.send(formatted+' Trash:'+req.query.temp);
 		console.log(formatted+' Trash:'+req.query.temp);
 	
+	
+		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
+				if(err) throw err;
+				});
+		
+		count=count+1;
+	
+		if(count&1){// 50 = trash bin total number
+			var n=0;
+					connection.query('select * from tbl order by time desc limit 50',function(err,rows,fields){
+							if(err) throw err;
+							
+							for (var k in rows) {
+							if (rows[k].amount_trash > 50.0)
+							console.log('floor: ', rows[k].floor, 'bin number: ', rows[k].amount_trash);
+							y_pos[n]=rows[k].floor;
+							x_pos[n]=rows[k].bin_no;
+							n++;
+							}
+							});
+		}
+	
+
 		//Write to local TXT file.
 		fs.appendFile('log_trash.txt',req.query.temp+' '+formatted+'\n', function(err){
 			if(err) throw err;
