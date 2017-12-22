@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pinLayout"
+    style="@style/fill">
+
+
+
+    <RelativeLayout style="@style/footer" android:id="@+id/footer">
+
+
+
+
+    </RelativeLayout>
+    <com.davemorrissey.labs.subscaleview.test.extension.views.PinView style="@style/mainPanel" android:id="@+id/imageView"/>
+
+    <Button
+        android:id="@+id/AddTrash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="17dp"
+        android:text="Add Trash Bin" />
+
+    <Button
+        android:id="@+id/DeleteTrash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/AddTrash"
+        android:layout_alignBottom="@+id/AddTrash"
+        android:layout_marginStart="26dp"
+        android:layout_toEndOf="@+id/AddTrash"
+        android:text="Delete Trash Bin" />
+
+    <Button
+        android:id="@+id/floor2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/floor1"
+        android:layout_alignStart="@+id/AddTrash"
+        android:text="2F" />
+
+    <Button
+        android:id="@+id/floor1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/floor2"
+        android:layout_marginBottom="17dp"
+        android:text="1F" />
+
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/floor1"
+        android:layout_alignBottom="@+id/floor1"
+        android:layout_alignStart="@+id/DeleteTrash"
+        android:layout_marginStart="34dp"
+        android:text="Refresh" />
+
+</RelativeLayout>

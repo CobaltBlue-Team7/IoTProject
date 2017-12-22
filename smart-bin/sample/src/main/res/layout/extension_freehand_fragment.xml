@@ -1,0 +1,10 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" style="@style/fill">
+
+    <RelativeLayout style="@style/footer" android:id="@+id/footer">
+
+
+    </RelativeLayout>
+
+    <com.davemorrissey.labs.subscaleview.test.extension.views.FreehandView style="@style/mainPanel" android:id="@+id/imageView"/>
+
+</RelativeLayout>

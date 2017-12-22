@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" style="@style/fill">
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+            <TextView
+                android:id="@+id/imageDisplay"
+                style="@style/indexLink"
+                android:text="Register picture" />
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+            <TextView
+                android:id="@+id/extension"
+                style="@style/indexLink"
+                android:text="Usage of SmartBin" />
+            <View style="@style/indexDivider"/>
+
+            <View style="@style/indexDivider"/>
+
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/github"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="16sp"
+                android:text="@string/main.viewongithub"/>
+
+    </LinearLayout>
+</ScrollView>
