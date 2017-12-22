@@ -25,7 +25,9 @@ The project consists of the following components.
      The color of the smart bins is determined by the amount of trash in the smart bin:
        - the amount of trash < 50% of the bin: <b>green</b>
        - the amount of trash < 70% of the bin: <b>yellow</b>
-       - otherwise: <b>red</b>
+       - otherwise: <b>red</b> <br>
+   
+   <i>For further explanations, please refer to <b>[smart-bin]</b> directory </i> 
 
 ## How to Use the Codes
 1. Arduino code
