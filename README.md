@@ -26,3 +26,22 @@ The project consists of the following components.
        - the amount of trash < 50% of the bin: <b>green</b>
        - the amount of trash < 70% of the bin: <b>yellow</b>
        - otherwise: <b>red</b>
+
+## How to Use the Codes
+1. Arduino code
+   - If you do not have Arduino Sketch, download it at https://www.arduino.cc/en/Main/Software
+   - Execute Arduino Sketch > Add <b>trash_bin.ino</b> on its project
+   - <b>Make sure that you specify a non-overlapping port number</b>
+   - Connect Nodemcu to your PC > Run trash_bin.ino
+
+2. Web application
+   - Install Node.js and all its related frameworks.
+   - Execute <b>send.js</b> by typing in "node send.js"
+   - Execute <b>main.js</b> by typing in "node main.js"
+   - Then, you can check the result on web page.
+
+3. Android application
+   - Install the latest version of Android Studio.
+   - Download <i>smart-bin</i> directory from this git repository.
+   - Open <i>smart-bin</i> directory on Android Studio.
+   - Run the project.
