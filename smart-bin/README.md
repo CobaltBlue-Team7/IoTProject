@@ -1,4 +1,4 @@
-# Android Application for Managing Smart Bins.
+# Android Application for Managing Smart Bins
 
 ## Note: referenced an existing open source to handle pinch zoom on ImageView
 This Android project is based on the open source project named "Subsampling Scale Image View".<br>
